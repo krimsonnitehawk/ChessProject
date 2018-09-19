@@ -12,85 +12,102 @@ public class ChessBoardTest extends TestCase {
     private ChessBoard testSubject;
 
     @Before
+    @Override
     public void setUp() throws Exception {
         testSubject = new ChessBoard();
     }
 
     @Test
     public void testHas_MaxBoardWidth_of_7() {
-        assertEquals(7, ChessBoard.MAX_BOARD_HEIGHT);
+        assertEquals(7, ChessBoard.BOARD_SIZE - 1);
     }
 
     @Test
     public void testHas_MaxBoardHeight_of_7() {
-        assertEquals(7, ChessBoard.MAX_BOARD_HEIGHT);
+        assertEquals(7, ChessBoard.BOARD_SIZE - 1);
     }
 
     @Test
+    @SuppressWarnings("static-method")
     public void testIsLegalBoardPosition_True_X_equals_0_Y_equals_0() {
-        boolean isValidPosition = testSubject.IsLegalBoardPosition(0, 0);
-        assertTrue(isValidPosition);
-    }
-
-    @Test
-    public void testIsLegalBoardPosition_True_X_equals_5_Y_equals_5() {
-        boolean isValidPosition = testSubject.IsLegalBoardPosition(5, 5);
+        boolean isValidPosition = ChessBoard.isLegalBoardPosition(0, 0);
         Assert.assertTrue(isValidPosition);
     }
 
     @Test
+    @SuppressWarnings("static-method")
+    public void testIsLegalBoardPosition_True_X_equals_5_Y_equals_5() {
+        boolean isValidPosition = ChessBoard.isLegalBoardPosition(5, 5);
+        Assert.assertTrue(isValidPosition);
+    }
+    
+    @Test
+    @SuppressWarnings("static-method")
+    public void testIsLegalBoardPosition_True_X_equals_7_Y_equals_7() {
+        boolean isValidPosition = ChessBoard.isLegalBoardPosition(7, 7);
+        Assert.assertTrue(isValidPosition);
+    }
+
+    @Test
+    @SuppressWarnings("static-method")
     public void testIsLegalBoardPosition_False_X_equals_11_Y_equals_5() {
-        boolean isValidPosition = testSubject.IsLegalBoardPosition(11, 5);
-        assertTrue(isValidPosition);
+        boolean isValidPosition = ChessBoard.isLegalBoardPosition(11, 5);
+        assertFalse(isValidPosition);
     }
 
     @Test
     public void testIsLegalBoardPosition_False_X_equals_0_Y_equals_9() {
-        boolean isValidPosition = testSubject.IsLegalBoardPosition(0, 9);
+        boolean isValidPosition = ChessBoard.isLegalBoardPosition(0, 9);
         assertFalse(isValidPosition);
     }
 
     @Test
     public void testIsLegalBoardPosition_False_X_equals_11_Y_equals_0() {
-        boolean isValidPosition = testSubject.IsLegalBoardPosition(11, 0);
+        boolean isValidPosition = ChessBoard.isLegalBoardPosition(11, 0);
         assertFalse(isValidPosition);
     }
 
     @Test
     public void testIsLegalBoardPosition_False_For_Negative_Y_Values() {
-        boolean isValidPosition = testSubject.IsLegalBoardPosition(5, -1);
+        boolean isValidPosition = ChessBoard.isLegalBoardPosition(5, -1);
         Assert.assertFalse(isValidPosition);
     }
 
     @Test
-    public void Avoids_Duplicate_Positioning() {
-        Pawn firstPawn = new Pawn(PieceColor.BLACK);
-        Pawn secondPawn = new Pawn(PieceColor.BLACK);
-        testSubject.Add(firstPawn, 6, 3, PieceColor.BLACK);
-        testSubject.Add(secondPawn, 6, 3, PieceColor.BLACK);
-        assertEquals(6, firstPawn.getXCoordinate());
-        assertEquals(3, firstPawn.getYCoordinate());
-        assertEquals(-1, secondPawn.getXCoordinate());
-        assertEquals(-1, secondPawn.getYCoordinate());
+    public void testAvoids_Duplicate_Positioning() {
+        Piece firstPawn = new Pawn(PieceColor.BLACK);
+        Piece secondPawn = new Pawn(PieceColor.BLACK);
+        testSubject.add(firstPawn, 6, 3);
+        try {
+            testSubject.add(secondPawn, 6, 3);
+        } catch (IllegalArgumentException ise) {
+            // expected as cannot add second Pawn at the same position as the first
+        }
+        assertEquals(6, firstPawn.getXCoordinate().intValue());
+        assertEquals(3, firstPawn.getYCoordinate().intValue());
+        assertEquals(null, secondPawn.getXCoordinate());
+        assertEquals(null, secondPawn.getYCoordinate());
     }
 
     @Test
-    public void testLimits_The_Number_Of_Pawns()
-    {
-        for (int i = 0; i < 10; i++)
-        {
+    public void testLimits_The_Number_Of_Pawns() {
+        for (int i = 0; i < 10; i++) {
             Pawn pawn = new Pawn(PieceColor.BLACK);
-            int row = i / ChessBoard.MAX_BOARD_WIDTH;
-            testSubject.Add(pawn, 6 + row, i % ChessBoard.MAX_BOARD_WIDTH, PieceColor.BLACK);
-            if (row < 1)
-            {
-                assertEquals(6 + row, pawn.getXCoordinate());
-                assertEquals(i % ChessBoard.MAX_BOARD_WIDTH, pawn.getYCoordinate());
+            int row = i / ChessBoard.BOARD_SIZE;
+            System.out.println("i[" + i + "] row[" + row + "]");
+            try {
+                testSubject.add(pawn, i % ChessBoard.BOARD_SIZE, 6 + row);
+            } catch (IllegalArgumentException iae) {
+                 System.out.println("message was ["+iae.getMessage()+"]");
             }
-            else
-            {
-                assertEquals(-1, pawn.getXCoordinate());
-                Assert.assertEquals(-1, pawn.getYCoordinate());
+            System.out.println(pawn);
+            if (row < 1) {
+                assertEquals(i % ChessBoard.BOARD_SIZE, pawn.getXCoordinate().intValue());
+                assertEquals(6 + row, pawn.getYCoordinate().intValue());
+
+            } else {
+                assertEquals(null, pawn.getXCoordinate());
+                Assert.assertEquals(null, pawn.getYCoordinate());
             }
         }
     }

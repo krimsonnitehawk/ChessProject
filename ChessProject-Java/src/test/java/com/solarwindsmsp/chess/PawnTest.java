@@ -19,39 +19,39 @@ public class PawnTest {
 
     @Test
     public void testChessBoard_Add_Sets_XCoordinate() {
-        this.chessBoard.Add(testSubject, 6, 3, PieceColor.BLACK);
-        assertEquals(6, testSubject.getXCoordinate());
+        this.chessBoard.add(testSubject, 6, 3);
+        assertEquals(6, testSubject.getXCoordinate().intValue());
     }
 
     @Test
     public void testChessBoard_Add_Sets_YCoordinate() {
-        this.chessBoard.Add(testSubject, 6, 3, PieceColor.BLACK);
-        assertEquals(3, testSubject.getYCoordinate());
+        this.chessBoard.add(testSubject, 6, 3);
+        assertEquals(3, testSubject.getYCoordinate().intValue());
     }
 
 
     @Test
     public void testPawn_Move_IllegalCoordinates_Right_DoesNotMove() {
-        chessBoard.Add(testSubject, 6, 3, PieceColor.BLACK);
-        testSubject.Move(MovementType.MOVE, 7, 3);
-        assertEquals(6, testSubject.getXCoordinate());
-        assertEquals(3, testSubject.getYCoordinate());
+        chessBoard.add(testSubject, 6, 3);
+        chessBoard.move(testSubject, MovementType.MOVE, 7, 3);
+        assertEquals(6, testSubject.getXCoordinate().intValue());
+        assertEquals(3, testSubject.getYCoordinate().intValue());
     }
 
     @Test
     public void testPawn_Move_IllegalCoordinates_Left_DoesNotMove() {
-        chessBoard.Add(testSubject, 6, 3, PieceColor.BLACK);
-        testSubject.Move(MovementType.MOVE, 4, 3);
-        assertEquals(6, testSubject.getXCoordinate());
-        assertEquals(3, testSubject.getYCoordinate());
+        chessBoard.add(testSubject, 6, 3);
+        chessBoard.move(testSubject, MovementType.MOVE, 4, 3);
+        assertEquals(6, testSubject.getXCoordinate().intValue());
+        assertEquals(3, testSubject.getYCoordinate().intValue());
     }
 
     @Test
     public void testPawn_Move_LegalCoordinates_Forward_UpdatesCoordinates() {
-        chessBoard.Add(testSubject, 6, 3, PieceColor.BLACK);
-        testSubject.Move(MovementType.MOVE, 6, 2);
-        assertEquals(6, testSubject.getXCoordinate());
-        assertEquals(2, testSubject.getYCoordinate());
+        chessBoard.add(testSubject, 6, 3);
+        chessBoard.move(testSubject, MovementType.MOVE, 6, 2);
+        assertEquals(6, testSubject.getXCoordinate().intValue());
+        assertEquals(2, testSubject.getYCoordinate().intValue());
     }
 
 }
