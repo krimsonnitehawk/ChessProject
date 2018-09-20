@@ -3,7 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.solarwindsmsp.chess;
+package com.solarwindsmsp.chess.game;
+
+import com.solarwindsmsp.chess.MovementType;
+import com.solarwindsmsp.chess.Piece;
 
 /**
  * Idea class about how to record each move within a game

@@ -1,6 +1,7 @@
 
-package com.solarwindsmsp.chess;
+package com.solarwindsmsp.chess.game;
 
+import com.solarwindsmsp.chess.ChessBoard;
 import java.util.List;
 
 /**
