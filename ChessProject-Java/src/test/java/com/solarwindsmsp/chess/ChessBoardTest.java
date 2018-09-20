@@ -1,5 +1,6 @@
 package com.solarwindsmsp.chess;
 
+import com.solarwindsmsp.chess.exception.IllegalMoveException;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,6 +8,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * TODO write more tests for move with new piece types and to test capture
+ * @author Andy
+ */
 public class ChessBoardTest extends TestCase {
 
     private ChessBoard testSubject;
@@ -103,7 +108,7 @@ public class ChessBoardTest extends TestCase {
             Pawn pawn = new Pawn(PieceColor.BLACK);
             int row = i / ChessBoard.BOARD_SIZE;
             try {
-                // add from (0,6) -> (7,6) then 
+                // add from (0,6) -> (7,6) then next rank which should fail
                 testSubject.add(pawn, i % ChessBoard.BOARD_SIZE, 6 + row);
             } catch (IllegalArgumentException iae) {
                 // starts firing when we have reached max
@@ -118,5 +123,46 @@ public class ChessBoardTest extends TestCase {
                 Assert.assertEquals(null, pawn.getYCoordinate());
             }
         }
+    }
+    
+    @Test
+    public void test_Move_LegalCoordinates_Updates_Board() {
+        Piece blackPawn = new Pawn(PieceColor.BLACK);
+        testSubject.add(blackPawn, 6, 3);
+        boolean exception = false;
+        Piece captured = null;
+        try {
+            captured = testSubject.move(blackPawn, MovementType.MOVE, 6, 2);
+        } catch (IllegalMoveException ime) {
+            exception = true;
+        }
+        assertNull(captured); // capture means this should be null
+        assertFalse(exception); // move was valid so no exception
+        assertEquals(6, blackPawn.getXCoordinate().intValue());
+        assertEquals(2, blackPawn.getYCoordinate().intValue());
+        assertFalse(testSubject.isPieceAtPosition(6, 3)); // the black pawn is not longer at 6,3
+        assertTrue(testSubject.isPieceAtPosition(6, 2)); // there is a piece at 6,2
+        assertEquals(blackPawn, testSubject.getPieceAtPosition(6, 2)); // and its the black pawn!
+    }
+    
+    @Test
+    public void test_Move_IllegalCoordinates_Does_Not_Update_Board() {
+        Piece blackPawn = new Pawn(PieceColor.BLACK);
+        testSubject.add(blackPawn, 6, 3);
+        boolean exception = false;
+        Piece captured = null;
+        try {
+            captured = testSubject.move(blackPawn, MovementType.MOVE, 6, 4);
+        } catch (IllegalMoveException ime) {
+            exception = true;
+        }
+        
+        assertTrue(exception); // move was invalid so exception
+        assertEquals(6, blackPawn.getXCoordinate().intValue()); // not gone anywhere
+        assertEquals(3, blackPawn.getYCoordinate().intValue());
+        assertTrue(testSubject.isPieceAtPosition(6, 3)); // the black pawn is still at 6,3
+        assertEquals(blackPawn, testSubject.getPieceAtPosition(6, 3)); // and its the black pawn!
+        assertFalse(testSubject.isPieceAtPosition(6, 2)); // there is no piece at 6,2
+        
     }
 }
