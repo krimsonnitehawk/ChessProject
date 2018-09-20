@@ -61,6 +61,7 @@ public class ChessBoard {
      * @exception IllegalArgumentException
      */
     public void add(Piece piece, int xCoordinate, int yCoordinate) {
+        
         if(isLegalBoardPosition(xCoordinate, yCoordinate) // is this a legal position and 
                 && !piece.added()) { // has this piece not been added already
             Piece existingPiece = getPieceAtPosition(xCoordinate, yCoordinate);

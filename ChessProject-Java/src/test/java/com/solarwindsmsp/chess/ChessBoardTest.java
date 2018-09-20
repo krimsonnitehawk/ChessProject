@@ -101,6 +101,7 @@ public class ChessBoardTest extends TestCase {
      * 2. The ChessBoard checks on a add call how many pieces that
      *    match the colour and type and will not allow an add if there
      *    are already 8 pawns of that colour
+     * tests ChessBoard.canAdd()
      */
     @Test
     public void testLimits_The_Number_Of_Pawns() {

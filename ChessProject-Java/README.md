@@ -19,7 +19,7 @@ get the test testLimits_The_Number_Of_Pawns in ChessBoard to pass.
 
 More tests for Pawn moving with black and white pawns (black going south and white north).
 
-Never been a fan of using -1 to represent an invalid selection, changed to Integer and therefore null could be stored for a pieces coordinates before being added to the board.
+Never been a fan of using -1 to represent an invalid selection, changed to Integer and therefore null could be stored for a piece's coordinates before being added to the board.
 Refactored tests for this change.
 
 Added tests in ChessBoard to test legal and illegal moves (using pawns).
