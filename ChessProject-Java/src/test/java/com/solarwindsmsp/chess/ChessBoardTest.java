@@ -31,21 +31,21 @@ public class ChessBoardTest extends TestCase {
     @SuppressWarnings("static-method")
     public void testIsLegalBoardPosition_True_X_equals_0_Y_equals_0() {
         boolean isValidPosition = ChessBoard.isLegalBoardPosition(0, 0);
-        Assert.assertTrue(isValidPosition);
+        assertTrue(isValidPosition);
     }
 
     @Test
     @SuppressWarnings("static-method")
     public void testIsLegalBoardPosition_True_X_equals_5_Y_equals_5() {
         boolean isValidPosition = ChessBoard.isLegalBoardPosition(5, 5);
-        Assert.assertTrue(isValidPosition);
+        assertTrue(isValidPosition);
     }
     
     @Test
     @SuppressWarnings("static-method")
     public void testIsLegalBoardPosition_True_X_equals_7_Y_equals_7() {
         boolean isValidPosition = ChessBoard.isLegalBoardPosition(7, 7);
-        Assert.assertTrue(isValidPosition);
+        assertTrue(isValidPosition);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ChessBoardTest extends TestCase {
     @Test
     public void testIsLegalBoardPosition_False_For_Negative_Y_Values() {
         boolean isValidPosition = ChessBoard.isLegalBoardPosition(5, -1);
-        Assert.assertFalse(isValidPosition);
+        assertFalse(isValidPosition);
     }
 
     @Test
@@ -89,18 +89,26 @@ public class ChessBoardTest extends TestCase {
         assertEquals(null, secondPawn.getYCoordinate());
     }
 
+    /**
+     * Wasn't 100% sure on this test.
+     * Updated this test to work with the following assumptions:
+     * 1. you can only have 8 pawns of a single colour on the board
+     * 2. The ChessBoard checks on a add call how many pieces that
+     *    match the colour and type and will not allow an add if there
+     *    are already 8 pawns of that colour
+     */
     @Test
     public void testLimits_The_Number_Of_Pawns() {
         for (int i = 0; i < 10; i++) {
             Pawn pawn = new Pawn(PieceColor.BLACK);
             int row = i / ChessBoard.BOARD_SIZE;
-            System.out.println("i[" + i + "] row[" + row + "]");
             try {
+                // add from (0,6) -> (7,6) then 
                 testSubject.add(pawn, i % ChessBoard.BOARD_SIZE, 6 + row);
             } catch (IllegalArgumentException iae) {
+                // starts firing when we have reached max
                  System.out.println("message was ["+iae.getMessage()+"]");
             }
-            System.out.println(pawn);
             if (row < 1) {
                 assertEquals(i % ChessBoard.BOARD_SIZE, pawn.getXCoordinate().intValue());
                 assertEquals(6 + row, pawn.getYCoordinate().intValue());

@@ -4,13 +4,28 @@ import static com.solarwindsmsp.chess.PieceType.PAWN;
 
 public class Pawn extends Piece {
     
+    // if black then starting y is 6
+    private static final int BLACK_STARTING_RANK = 6;
+    // if white the starting y is 1
+    private static final int WHITE_STARTING_RANK = 1;
+    
     public Pawn(PieceColor pieceColor) {
        super(pieceColor, PAWN);
     }
     
+    boolean hasMoved() {
+        switch (getPieceColor()) {
+            case BLACK:
+                return getYCoordinate() != null && getYCoordinate() != BLACK_STARTING_RANK;
+            case WHITE:
+                return getYCoordinate() != null && getYCoordinate() != WHITE_STARTING_RANK;
+        }
+        return false;
+    }
+    
     /**
      * 
-     * @param board
+     * @param board needed to check the piece at (newX,newY)
      * @param movementType
      * @param newX
      * @param newY

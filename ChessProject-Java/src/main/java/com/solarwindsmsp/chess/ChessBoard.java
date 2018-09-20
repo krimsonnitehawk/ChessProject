@@ -1,5 +1,7 @@
 package com.solarwindsmsp.chess;
 
+import com.solarwindsmsp.chess.exception.IllegalMoveException;
+
 public class ChessBoard {
 
     public static final int BOARD_SIZE = 8;
@@ -27,7 +29,7 @@ public class ChessBoard {
     }
     
     /**
-     * Check based on the piece being added that more than the max are not added to the board -
+     * Check, based on the piece being added, that more than the max for that piece and colour are not added to the board -
      * for example you should not be allowed to add more than 8 black pawns
      * @param piece
      * @return 
@@ -70,7 +72,7 @@ public class ChessBoard {
                  throw new IllegalArgumentException("Piece ["+piece+"] cannot be added at ["+xCoordinate+", "+yCoordinate+"] max no of pieces added");
             }
             piece.setCoordinates(xCoordinate, yCoordinate); // set the piece's coordinates
-            pieces[xCoordinate][yCoordinate] = piece; // and place on the board
+            placePieceOnSquare(piece, xCoordinate, yCoordinate); // and place on the board
         } else {
             throw new IllegalArgumentException("Piece ["+piece+"] cannot be added at ["+xCoordinate+", "+yCoordinate+"]");
         }
@@ -95,22 +97,32 @@ public class ChessBoard {
     }
     
     /**
-     * Move a piece to the new position defined by newX and newY
+     * Move a piece to the new position defined by {@code newX} and {@code newY}. Returns the captured piece to be stored in {@link Player#captured}, if capturing.
      * @param piece The piece to move
-     * @param movementType either {@link MovementType#MOVE} or {@link MovementType#CAPTURE}
+     * @param movementType either {@link MovementType#MOVE} or {@link MovementType#CAPTURE}. If {@link MovementType#CAPTURE} and successful the captured piece is returne
      * @param newX the new file position
      * @param newY the new rank position
-     * @return {@code true} if the move was successful, {@code false} if not
+     * @return the captured piece if the movementType was {@link MovementType#CAPTURE}, {@code null} if the movementType was {@link MovementType#MOVE} or throws an exception if the move was not possible
      * @exception IllegalStateException if the piece has not been added to the board yet
+     * @throws com.solarwindsmsp.chess.exception.IllegalMoveException  if the move was not possible
      */
-    public boolean move(Piece piece, MovementType movementType, int newX, int newY) {
+    public Piece move(Piece piece, MovementType movementType, int newX, int newY) throws IllegalMoveException {
+        Piece captured = null;
         if(piece.isLegalMove(this, movementType, newX, newY)) {
             remove(piece); // piece is moving so clear from current position on board
             piece.setCoordinates(newX, newY); // tell the piece about its new position
-            pieces[newX][newY] = piece; // actually move it to the new position on the board
-            return true;
+            
+            if(movementType == MovementType.CAPTURE) {
+                 captured = getPieceAtPosition(newX, newY); // there must be a piece at newX, newY
+                 captured.setCoordinates(null, null); // no longer on the board
+                 remove(captured); // not real need to do this as the next line is sticking the capturing piece in its place
+            }
+
+            placePieceOnSquare(piece, newX, newY); // actually move it to the new position on the board, if captured then this will replace the captured piece
+        } else {
+            throw new IllegalMoveException("Cannot move piece");
         }
-        return false;
+        return captured;
     }
     
     /**
@@ -119,5 +131,9 @@ public class ChessBoard {
      */
     private void remove(Piece piece) {
         pieces[piece.getXCoordinate()][piece.getYCoordinate()] = null; 
+    }
+    
+    private void placePieceOnSquare(Piece piece, int newX, int newY) {
+        pieces[newX][newY] = piece; 
     }
 }

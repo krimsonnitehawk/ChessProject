@@ -18,10 +18,7 @@ public abstract class Piece {
     }  
     
     public boolean added() {
-        if(xCoordinate != null) {
-            return true;
-        }
-        return false;
+        return xCoordinate != null;
     }
 
 
@@ -48,13 +45,21 @@ public abstract class Piece {
     
     @Override
     public String toString() {
-        return CurrentPositionAsString();
+        return currentPositionAsString();
     }
 
-    private String CurrentPositionAsString() {
+    private String currentPositionAsString() {
         return String.format("%n"+this.getClass().getSimpleName()+" Current X: %1d%n Current Y: %2d%n Piece Colour: %3s", getXCoordinate(), getYCoordinate(), getPieceColor());
     }
     
+    /**
+     * Depending on the movementType checks to see whether this piece can move to the position (newX,newY).
+     * @param board
+     * @param movementType
+     * @param newX
+     * @param newY
+     * @return {@code true} if this is a legal move, {@code false} otherwise.
+     */
     abstract boolean isLegalMove(ChessBoard board, MovementType movementType, int newX, int newY);
 
     @Override
